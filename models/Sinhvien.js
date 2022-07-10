@@ -16,6 +16,14 @@ function SinhVien () {
     };
 
     this.xeploai = function () {
-
+        var xeploai ='';
+        if (this.tinhdiemtrungbinh() > 0 && this.tinhdiemtrungbinh() < 5) {
+            xeploai ='trungbinh';
+        } else if (this.tinhdiemtrungbinh() > 5 && this.tinhdiemtrungbinh() < 7){
+            xeploai ='kha';
+        } else {
+            xeploai ='gioi';
+        }
+        return xeploai;
     };
 }

@@ -6,17 +6,17 @@
 
 // Tao 1 mang SinhVien 
 
-var mangSinhVien = [];
+let mangSinhVien = [];
 document.querySelector('#btnThemSinhVien').onclick = function () {
     // tao lop doi tuong moi 
-    var sv = new SinhVien();
+    let sv = new SinhVien();
     // Lay thong tin tu giao dien dua vao input sv
     sv.maSinhVien = document.querySelector('#maSinhVien').value;
     sv.tenSinhVien = document.querySelector('#tenSinhVien').value;
     sv.Email = document.querySelector('#Email').value;
     // tao bien ns de format theo dung date trong window hoac browser
 
-    var ns = new Date(document.querySelector('#ngaySinh').value);
+    let ns = new Date(document.querySelector('#ngaySinh').value);
 
     sv.ngaySinh = ns.toLocaleDateString();
     sv.khoaHoc = document.querySelector('#khoaHoc').value;
@@ -93,15 +93,15 @@ document.querySelector('#btnThemSinhVien').onclick = function () {
 // Tao function xu li tao ra object cho moi sinh vien 
 function renderTableSinhVien(arraySinhvien) {
     // Tao gia tri ban dau 
-    var htmlcontent = '';
+    let htmlcontent = '';
     // Cho vong lap chay duyet qua cac object sinh vien co trong mang
-    for (var index = 0; index < arraySinhvien.length; index++) {
+    for (let index = 0; index < arraySinhvien.length; index++) {
         // Cac buoc xu li 
         // tao mot bien nhan gia tri tu object da duyet 
-        var sv = arraySinhvien[index];
+        let sv = arraySinhvien[index];
         // Tu object tao ra the td
         // De nhan gia tri cua bien phai de giau ${} truoc thuoc tinh do 
-        var tr = `
+        let tr = `
         <tr>
             <td>${sv.maSinhVien}</td>
             <td>${sv.tenSinhVien}</td>
@@ -112,14 +112,13 @@ function renderTableSinhVien(arraySinhvien) {
             <td>
                 <button class="btn btn-danger" onclick =
                 "xoaSinhVien('${index}')">Xoa</button>
-                <button class="btn btn-primary ml-2">Sua</button> 
+                <button class="btn btn-primary ml-2" onclick = "suasinhvien('${sv.maSinhVien}')">Sua</button> 
             </td>
         </tr>
         `;
         // Khi tao xong se duoc them vao gia tri ban dau
         htmlcontent += tr;
     }
-
     document.querySelector('#tblSinhVien').innerHTML = htmlcontent;
 
 }
@@ -129,4 +128,70 @@ function xoaSinhVien(index) {
     mangSinhVien.splice(index, 1);
     // Reload lai danh sach table 
     renderTableSinhVien(mangSinhVien);
+}
+
+let suasinhvien = (masinhvienonclick) => {
+    // Cho mang duyet qua tung object 
+    for (let index = 0; index < mangSinhVien.length; index++) {
+        // Gan gia tri object cho mot bien moi 
+        let fixsinhvien = mangSinhVien[index];
+        // Tim kiem ma sinh vien giong voi masinhvien cua object ban dau de lay cac gia tri can thay doi 
+        if (fixsinhvien.maSinhVien === masinhvienonclick) {
+            // in cac gia tri can thay doi vao form de thay doi du lieu va cap nhat 
+            document.querySelector('#maSinhVien').value = fixsinhvien.maSinhVien;
+            document.querySelector('#tenSinhVien').value = fixsinhvien.tenSinhVien;
+            document.querySelector('#Email').value = fixsinhvien.Email;
+            let ns = new Date(document.querySelector('#ngaySinh').value);
+            fixsinhvien.ngaySinh = ns.toLocaleDateString();
+            document.querySelector('#khoaHoc').value = fixsinhvien.khoaHoc;
+            document.querySelector('#diemToan').value = fixsinhvien.diemToan;
+            document.querySelector('#diemLy').value = fixsinhvien.diemLy;
+            document.querySelector('#diemHoa').value = fixsinhvien.diemHoa;
+            break;
+        }
+    }
+}
+document.querySelector('#btnCapNhatSinhVien').onclick = function () {
+    // Tao mot object moi lay cac gia tri can thay doi (tru gia tri maSinhVien)
+    let sv = new SinhVien();
+    // Lay cac gia tri moi gan vao thuoc tinh cua object moi
+    sv.maSinhVien = document.querySelector('#maSinhVien').value;
+    sv.tenSinhVien = document.querySelector('#tenSinhVien').value;
+    sv.Email = document.querySelector('#Email').value;
+    let ns = new Date(document.querySelector('#ngaySinh').value);
+    sv.ngaySinh = ns.toLocaleDateString();
+    sv.khoaHoc = document.querySelector('#khoaHoc').value;
+    sv.diemToan = document.querySelector('#diemToan').value;
+    sv.diemLy = document.querySelector('#diemLy').value;
+    sv.diemHoa = document.querySelector('#diemHoa').value;
+    // Cho vong lap chya duyet qua cac object vaf xet masinhvien cac object da duoc duyet
+    for (let index = 0; index < mangSinhVien.length; index++) {
+        let svup = mangSinhVien[index];
+        // Tim object co maSinVien giong voi object moi se thay doi cac gia tri mong muon 
+        if (svup.maSinhVien == sv.maSinhVien) {
+            svup.maSinhVien = sv.maSinhVien;
+            svup.tenSinhVien = sv.tenSinhVien;
+            svup.Email = sv.Email;
+            svup.ngaySinh = sv.ngaySinh;
+            svup.khoaHoc = sv.khoaHoc;
+            svup.diemToan = sv.diemToan;
+            svup.diemLy = sv.diemLy;
+            svup.diemHoa = sv.diemHoa;
+            break;
+        }
+    }
+    // Reload lai redertable 
+    renderTableSinhVien(mangSinhVien);
+}
+
+document.querySelector('#tk').onclick = function () {
+    let mangkq = [];
+    let tukhoa = document.querySelector('#tuKhoa').value;
+    for (let index = 0; index < mangSinhVien.length; index++) {
+        let svtk = mangSinhVien[index];
+        if (svtk.xeploai() === tukhoa) {
+            mangkq.push(svtk);
+        }
+    }
+    renderTableSinhVien(mangkq);
 }
